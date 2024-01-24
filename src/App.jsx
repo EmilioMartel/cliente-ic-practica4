@@ -6,7 +6,7 @@ import './App.css'
 const SERVER_URL = 'http://localhost:3000'; // Ajusta la URL de tu servidor
 
 function App() {
-  const [dataArray, setDataArray] = useState([]); // Nuevo estado para almacenar el array de objetos JSON
+  const [nodes, setNodes] = useState({}); // Nuevo estado para almacenar el array de objetos JSON
 
   useEffect(() => {
     const socketConnection = io(SERVER_URL);
@@ -22,7 +22,7 @@ function App() {
     const handleMqttMessage = (message) => {
       try {
         const parsedMessage = JSON.parse(message);
-        setDataArray(parsedMessage)
+        setNodes(parsedMessage)
       } catch (error) {
         console.error('Error al parsear el mensaje como objeto JSON:', error);
       }
@@ -42,7 +42,7 @@ function App() {
         socketConnection.disconnect();
       }
     };
-  }, [dataArray]);
+  }, [nodes]);
 
 
   return (
@@ -51,16 +51,14 @@ function App() {
 
       {/* Genera dinámicamente las tarjetas según el tamaño del array */}
       <div className="row row-cols-1 row-cols-md-3 g-4">
-        {dataArray.map((item) => (
-          <div key={item.id} className="col">
+        {nodes.keys().map((key) => (
+          <div key={key} className="col">
             <div className="card">
               {/* Puedes ajustar la lógica para cargar imágenes según los datos del array */}
-              <img src={placaImage} className="card-img-top" alt="Card Image" />
+              <img src={placaImage} className="card-img-top" alt="Imagen placa MKR1310" />
               <div className="card-body">
-              <h5 className="card-title">{item.name}</h5>                
-                <p className="card-text">Status: {(item.status) ? '✅' : '🚩'} </p>
-                <p className="card-text">Capacidad: {item.capacidad}</p>
-                <p className="card-text">Coordenadas: {item.coordenadas}</p>
+              <h5 className="card-title">Placa</h5>                
+                <p className="card-text">Status: {(nodes[key].status) ? '✅' : '🚩'} </p>
               </div>
             </div>
           </div>
